@@ -3,18 +3,18 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const [mapCode, setMapCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [mapData, setMapData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    setMapData(null);
 
     try {
       const apiKey = 'a875fc407cb5b343e07a2d26a1e568fa'
@@ -29,11 +29,16 @@ export default function DashboardPage() {
       if (!response.ok) {
         throw new Error('Failed to fetch map data');
       }
-      const data = await response.json()
+      const data = await response.json();
       if (!data) {
         throw new Error('No data returned from API');
       }
-      setMapData(JSON.stringify(data, null, 2))
+      
+      // Store the data in localStorage for the next page
+      localStorage.setItem('mapData', JSON.stringify(data));
+      
+      // Navigate to the dynamic route
+      router.push(`/dashboard/${mapCode}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -68,15 +73,6 @@ export default function DashboardPage() {
         {error && (
           <div className="mt-4 p-4 bg-destructive/10 text-destructive rounded-md">
             {error}
-          </div>
-        )}
-
-        {mapData && (
-          <div className="mt-6 space-y-4">
-            <h2 className="text-xl font-semibold">Map Details</h2>
-            <pre className="bg-muted p-4 rounded-md overflow-auto">
-                {mapData}
-            </pre>
           </div>
         )}
       </div>

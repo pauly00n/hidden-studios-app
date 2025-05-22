@@ -13,6 +13,25 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient();
     await supabase.auth.exchangeCodeForSession(code);
+
+    // After exchanging the code, get the user
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+      // Create a profile with default values
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          display_name: 'Name',
+          bio: 'Bio',
+          updated_at: new Date().toISOString(),
+        });
+
+      if (profileError) {
+        console.error('Error creating profile:', profileError);
+      }
+    }
   }
 
   if (redirectTo) {

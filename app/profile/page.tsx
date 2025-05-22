@@ -12,7 +12,20 @@ export default async function DashboardPage() {
     redirect('/sign-in');
   }
 
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile) {
+    console.log("no profile")
+    await supabase.from('profiles').insert([
+      { id: user.id, display_name: '', bio: '' }
+    ]);
+  }
+
+  const { data: finalProfile, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
@@ -38,8 +51,8 @@ export default async function DashboardPage() {
 
           <div>
             <ProfileForm
-              initialDisplayName={profile.display_name}
-              initialBio={profile.bio}
+              initialDisplayName={finalProfile.display_name}
+              initialBio={finalProfile.bio}
             />
           </div>
         </div>
