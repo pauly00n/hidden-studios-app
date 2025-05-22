@@ -7,7 +7,7 @@ Full stack web app with authentication, user data (name, bio) stored in Supabase
 Clone the repo.
 
 Next create a Supabase project, 
-create an `.env.local` file with the following environment variables:
+create an `.env.local` file and add the following environment variables:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
@@ -15,7 +15,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 found from your Supabase project.
 
-Use the following schema:
+Next, run
+```
+npm install
+```
+
+Next, make sure to use the following schema for your Supabase database:
 ```SQL
 create table public.profiles (
   id uuid references auth.users(id) primary key,
@@ -44,6 +49,13 @@ create trigger on_auth_user_created
 after insert on auth.users
 for each row execute procedure handle_new_user();
 ```
+
+lastly, run
+```
+npm run dev
+```
+
+and open up the localhost to use the website.
 
 ## Methodology/Hurdles Overcome:
 
