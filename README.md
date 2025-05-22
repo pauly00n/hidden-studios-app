@@ -55,7 +55,7 @@ lastly, run
 npm run dev
 ```
 
-and open up the localhost to use the website.
+and open up the localhost to use the app.
 
 ## Methodology/Hurdles Overcome:
 
@@ -76,3 +76,7 @@ Ended up using [[https://scraperapi.com]] to bypass cloudflare and finally get a
 To forecast the data, I went for a simple time series seasonality model to accurately forecast how usage will look. This is much better than typical linear regression especially for ongoing user data, as we're able to capture recurring patterns in our prediction (i.e lower usage during school hours, late at night, more on weekends, etc).
 
 The app isn't as fully fleshed out as it could be, but it has all the necessary fundamentals to expand into a full blown product whenever required. 
+
+## KNOWN ISSUES
+
+When creating an account for the first time, navigate to "Profile" on the top right corner. Then refresh the page for the PostGres SQL in Supabase to create the new row for the user, it will display a JSON error at first.
