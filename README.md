@@ -30,6 +30,19 @@ create policy "Users can select their own profile" on public.profiles
   for select using ( auth.uid() = id );
 create policy "Users can insert/update their own profile" on public.profiles
   for all using ( auth.uid() = id );
+
+create function handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, display_name, bio)
+  values (new.id, '', '');
+  return new;
+end;
+$$ language plpgsql;
+
+create trigger on_auth_user_created
+after insert on auth.users
+for each row execute procedure handle_new_user();
 ```
 
 ## Methodology/Hurdles Overcome:
@@ -50,4 +63,4 @@ Ended up using [[https://scraperapi.com]] to bypass cloudflare and finally get a
 
 To forecast the data, I went for a simple time series seasonality model to accurately forecast how usage will look. This is much better than typical linear regression especially for ongoing user data, as we're able to capture recurring patterns in our prediction (i.e lower usage during school hours, late at night, more on weekends, etc).
 
-
+The app isn't as fully fleshed out as it could be, but it has all the necessary fundamentals to expand into a full blown product whenever required. 
